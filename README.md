@@ -10,6 +10,8 @@ A standalone Python Telegram bot for checking a bot token you own, running 30-se
 - 30-second DNS and HTTPS network sampling
 - Current service runtime/deployment indicators
 - JSON diagnostic reports
+- Gemini AI log analysis for uploaded `.log`/`.txt` files or pasted logs
+- Hinglish root-cause explanations, evidence, and step-by-step fixes
 - Recent in-memory application log export
 - Submitted tokens are not saved and are not intentionally logged
 
@@ -31,6 +33,8 @@ A standalone Python Telegram bot for checking a bot token you own, running 30-se
    - `ADMIN_USER_ID`: your numeric Telegram user ID
    - `DEV_USERNAME`: developer username, e.g. `@your_username`
    - `APP_NAME`: optional display name
+   - `GEMINI_API_KEY`: Google AI Studio API key (required for AI log analysis)
+   - `GEMINI_MODEL`: optional model name; defaults to `gemini-3.5-flash`
 5. Deploy/redeploy. Railway uses `Procfile` / `railway.toml` to start `python main.py`.
 6. Open your bot in Telegram and send `/start`.
 
@@ -50,3 +54,14 @@ Use a trusted Telegram user-ID bot or inspect the `from.id` value from an update
 - If a token was exposed, revoke it with `@BotFather` and create a replacement.
 - The bot token submitted for testing is held only during the request and is not written to JSON reports or application logs.
 - Set `ADMIN_USER_ID`; token testing is disabled for everyone else if it is missing.
+
+## Gemini AI log analysis
+
+1. Create an API key in Google AI Studio.
+2. Add it as `GEMINI_API_KEY` in Railway Variables (never commit it to GitHub).
+3. Open the bot in a private chat as the configured admin.
+4. Tap **AI Analyze Logs** and upload a `.log`/`.txt` file or paste the logs.
+5. The bot redacts common Telegram tokens, Google API keys, bearer tokens, and secret-like assignments before sending log text to Google Gemini.
+6. Gemini returns an explanation in Hinglish plus TXT and JSON reports.
+
+Privacy note: log contents that remain after redaction are sent to Google Gemini for analysis. Review logs before uploading; redaction cannot guarantee detection of every secret format. AI suggestions can be wrong, so verify fixes before changing production code.
